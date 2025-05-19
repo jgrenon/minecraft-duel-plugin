@@ -1,20 +1,31 @@
 package avx.duel;
 
-import org.bukkit.*;
-import org.bukkit.command.*;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.*;
+import org.bukkit.ChatColor;
 
 import java.util.*;
 
-public class DuelPlugin extends JavaPlugin implements CommandExecutor {
+public class DuelPlugin extends JavaPlugin {
 
     private final Map<Player, Player> pendingChallenges = new HashMap<>();
     private final Map<Player, Long> challengeTimestamps = new HashMap<>();
-    private final Map<Player, Player> ongoingDuels = new HashMap<>();
-    private final Map<UUID, Stats> playerStats = new HashMap<>();
+    public final Map<Player, Player> ongoingDuels = new HashMap<>();
+    public final Map<UUID, Stats> playerStats = new HashMap<>();
     private final Map<String, DuelArena> arenas = new HashMap<>();
     private final Map<UUID, Location> originalLocations = new HashMap<>();
 
@@ -24,7 +35,6 @@ public class DuelPlugin extends JavaPlugin implements CommandExecutor {
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        loadArenaLocations();
         loadArenas();
         getServer().getPluginManager().registerEvents(new DuelListener(), this);
         getServer().getPluginManager().registerEvents(new LeaderboardGUIListener(), this);
@@ -33,6 +43,8 @@ public class DuelPlugin extends JavaPlugin implements CommandExecutor {
         duelTimeoutSeconds = getConfig().getInt("duel_timeout_seconds", 30);
         countdownSeconds = getConfig().getInt("countdown_seconds", 5);
         this.getCommand("duel").setExecutor(this);
+
+        this.startDuelTimeoutTask();
     }
 
     public void loadArenas() {
@@ -332,8 +344,7 @@ public class DuelPlugin extends JavaPlugin implements CommandExecutor {
         }
     }
 
-    // Optional: Clean up expired requests every minute
-    public DuelPlugin() {
+    private void startDuelTimeoutTask() {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -364,5 +375,6 @@ public class DuelPlugin extends JavaPlugin implements CommandExecutor {
 
             }
         }.runTaskTimer(this, 0L, 20L * 60); // Runs every 60 seconds
+
     }
 }

@@ -1,5 +1,7 @@
 package avx.duel;
 
+import org.bukkit.Location;
+
 public class DuelArena {
     public Location slot1;
     public Location slot2;
