@@ -1,0 +1,12 @@
+arenas:
+  default:
+    slot1:
+      world: spawn
+      x: -2710
+      y: 95
+      z: -4612
+    slot2:
+      world: spawn
+      x: -2710
+      y: 95
+      z: -4629

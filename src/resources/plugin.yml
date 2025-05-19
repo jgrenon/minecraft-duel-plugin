@@ -1,0 +1,8 @@
+name: DuelPlugin
+version: 1.0
+main: avx.duel.DuelPlugin
+api-version: 1.20
+commands:
+  duel:
+    description: Start, accept, or view duel leaderboard
+    usage: /duel <player> | accept | deny | leaderboard
